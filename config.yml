@@ -1,0 +1,16 @@
+ # Configuration File for Your Application
+
+identity:
+  name: runtime_test          # Name of the application
+  version: 1.0.0               # Version of the application
+
+resource:
+  io:
+    io_queue_size: 1024        # Size of the IO queue
+    io_queue_no: 4             # Number of IO queues
+
+  response:
+    response_queue_size: 512   # Size of the response queue
+    response_queue_no: 2       # Number of response queues
+
+  worker_thread_count: 8       # Number of worker threads
