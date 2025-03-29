@@ -10,6 +10,7 @@ use std::{
 };
 
 type WorkerCount = u32;
+
 const START_SIGNAL: i16 = -1;
 const END_SIGNAL: i16 = 1;
 
