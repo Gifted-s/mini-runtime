@@ -56,7 +56,7 @@ impl Worker {
                         thread_count.fetch_add(START_SIGNAL, Ordering::SeqCst);
 
                         let output = task();
-                        
+
                         response_sender.send(output);
 
                         thread_count.fetch_add(END_SIGNAL, Ordering::SeqCst);

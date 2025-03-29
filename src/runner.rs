@@ -48,7 +48,5 @@ impl Runtime {
         }
     }
 
-    fn start<F: Fn()>(f: F) {
-        //
-    }
+    fn start<F: Fn()>(f: F) {}
 }
