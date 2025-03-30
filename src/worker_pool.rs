@@ -53,14 +53,14 @@ impl Worker {
 
         thread::spawn(move || {
             loop {
-                thread::sleep(Duration::from_secs(2));
+                thread::sleep(Duration::from_millis(500));
                 // println!("Recieve from this worker {:?}", worker_id);
                 match task_receiver.try_recv() {
                     Ok(task) => {
                         thread_count.fetch_add(START_SIGNAL, Ordering::SeqCst);
 
                         let output = task();
-
+                        println!("Handled by {:?}", worker_id);
                         match response_sender.send(output) {
                             Ok(sent) => println!("Sent {:?}", sent),
                             Err(err) => println!("Send error {:?}", err),
