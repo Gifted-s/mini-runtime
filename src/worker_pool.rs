@@ -1,9 +1,8 @@
-use crate::runner::{Response, ResponseReceiver, ResponseSender, TaskReceiver, TaskSender};
+use crate::runtime::{Response, ResponseReceiver, ResponseSender, TaskReceiver, TaskSender};
 use std::{
     sync::{
         Arc,
         atomic::{AtomicI16, Ordering},
-        mpsc::Sender,
     },
     thread,
     time::Duration,
@@ -40,25 +39,32 @@ impl Worker {
     }
 
     pub fn start(&self) {
+        let mut worker_id = 0;
         for _ in 0..self.thread_count.load(Ordering::Relaxed) {
-            self.worker_runner();
+            worker_id += 1;
+            self.worker_runner(worker_id);
         }
     }
 
-    pub fn worker_runner(&self) {
+    pub fn worker_runner(&self, worker_id: i32) {
         let task_receiver = self.task_receiver.clone();
         let response_sender = self.response_sender.clone();
         let thread_count = self.thread_count.clone();
+
         thread::spawn(move || {
             loop {
-                thread::sleep(Duration::from_millis(100));
+                thread::sleep(Duration::from_secs(2));
+                // println!("Recieve from this worker {:?}", worker_id);
                 match task_receiver.try_recv() {
                     Ok(task) => {
                         thread_count.fetch_add(START_SIGNAL, Ordering::SeqCst);
 
                         let output = task();
 
-                        response_sender.send(output);
+                        match response_sender.send(output) {
+                            Ok(sent) => println!("Sent {:?}", sent),
+                            Err(err) => println!("Send error {:?}", err),
+                        }
 
                         thread_count.fetch_add(END_SIGNAL, Ordering::SeqCst);
                     }

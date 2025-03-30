@@ -4,5 +4,5 @@ This is a side project to build a simple runtime that can run your code based on
 
 - src 
    - config
-   - runner
+   - runtime
    - worker_pool
